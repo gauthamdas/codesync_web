@@ -1,0 +1,189 @@
+body{
+  overflow-y: clip;
+  overflow-x: clip;
+}
+
+.App {
+  text-align: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+
+.loadclass{
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0);
+  left: 45vw;
+  top: 40vh;
+  width: auto;
+  width: 150px; 
+  height: 100px;
+  /* height: auto; */
+  text-align: center;
+  padding-top: 30px;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 6px 6px 0 #070707 rgb(17, 17, 17);
+}
+
+.loader-11 {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 3px solid;
+  border-color: rgb(0, 0, 0) rgb(0, 0, 0) transparent transparent;
+  -webkit-animation: rotation 1s linear infinite;
+          animation: rotation 1s linear infinite;
+}
+.loader-11:after, .loader-11:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border: 3px solid;
+  border-color: transparent transparent #0026ff #0026ff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  -webkit-animation: rotationBack 0.5s linear infinite;
+          animation: rotationBack 0.5s linear infinite;
+  transform-origin: center center;
+}
+.loader-11:before {
+  width: 32px;
+  height: 32px;
+  border-color: rgb(0, 0, 0) rgb(0, 0, 0) transparent transparent;
+  -webkit-animation: rotation 1.5s linear infinite;
+          animation: rotation 1.5s linear infinite;
+}
+
+@-webkit-keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+
+/* ############################## */
+/* NEW LOADER */
+/* ############################## */
+.loadclass-new{
+  /* position: fixed; */
+  display: flex;
+  position: fixed;
+  top: 0vh;
+  left: 0vh;
+  background-color: rgba(137, 137, 137, 0.447);
+  width: 100vw; 
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+}
+.spinner-box {
+  width: 6vw;
+  height: 6vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+.configure-border-1 {
+  width: 5vw;
+  height: 5vw;
+  padding: 3px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fb5b53;
+  animation: configure-clockwise 3s ease-in-out 0s infinite alternate;
+}
+
+.configure-border-2 {
+  width: 5vw;
+  height: 5vw;
+  padding: 3px;
+  left: -115px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(63, 249, 220);
+  transform: rotate(45deg);
+  animation: configure-xclockwise 3s ease-in-out 0s infinite alternate;
+}
+
+.configure-core {
+  width: 100%;
+  height: 100%;
+  background-color: #1d2630;
+}
+
+@keyframes configure-clockwise {
+  0% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes configure-xclockwise {
+  0% {
+    transform: rotate(45deg);
+  }
+  25% {
+    transform: rotate(-45deg);
+  }
+  50% {
+    transform: rotate(-135deg);
+  }
+  75% {
+    transform: rotate(-225deg);
+  }
+  100% {
+    transform: rotate(-315deg);
+  }
+}

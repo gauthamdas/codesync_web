@@ -1,0 +1,138 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #2d2d2d;
+    color: #fff;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 65px;
+    padding: 0 80px;
+    background-color: #1a1a1a;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .nav-links {
+    display: flex;
+    list-style: none;
+  }
+  
+  .nav-links li {
+    margin-right: 20px;
+    font-size: 1rem;
+  }
+  
+  .nav-links li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .editor {
+    width: 60%;
+    margin: 0px auto;
+    padding: 20px;
+    background-color: #3d3d3d;
+  }
+  
+  .editor h2 {
+    margin-bottom: 20px;
+  }
+  .custom-selection {
+    /* border: 2px solid #ff0000; */
+    /* background-color: #ff00008b; */
+  }
+/* 5 different colors */
+  .color-1 {
+    background-color: #ff00008b;
+  }
+  .color-2 {
+    background-color: #ff82048b;
+  }
+  .color-3 {
+    background-color: #ff00ff8b;
+  }
+  .color-4 {
+    background-color: #00ff008b;
+  }
+  .color-5 {
+    background-color: #0000ff8b;
+  }
+  .monaco-editor .selection1 {
+    background-color: yellow;
+  }
+  
+  .monaco-editor .selection2 {
+    background-color: orange;
+  }
+  
+  .monaco-editor .selection3 {
+    background-color: blue;
+  }
+  
+  
+  .editor section {
+    width: 60vw;
+    height: 400px;
+    padding: 10px;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #2d2d2d;
+    border: none;
+    outline: none;
+  }
+
+  
+  .drawer {
+    width: 300px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: -300px;
+    background-color: #3d3d3d;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .drawer.open {
+    transform: translateX(-300px);
+  }
+  
+  .drawer h2 {
+    margin: 20px;
+  }
+  
+  .drawer ul {
+    list-style: none;
+    margin: 20px;
+  }
+  
+  .drawer ul li {
+    margin-bottom: 10px;
+  }
+  
+  .drawer ul li:before {
+    content: "•";
+    color: #fff;
+    margin-right: 10px;
+  }
+  
+  .menu-toggle {
+    position: fixed;
+    top: 18px;
+    right: 30px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1;
+  }
+  
