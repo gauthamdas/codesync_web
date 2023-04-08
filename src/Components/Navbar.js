@@ -1,8 +1,9 @@
 import React from 'react';
 import '../Styles/main.css';
 
-function Navbar({toggleDrawer, ...props}) {
-  return (
+function Navbar({toggleDrawer, auth , setAuth , ...props}) {
+  return (<>
+  { auth &&
     <nav className="navbar">
       <div className="logo">My App</div>
       <ul className="nav-links">
@@ -14,6 +15,8 @@ function Navbar({toggleDrawer, ...props}) {
       </div>}
       </ul>
     </nav>
+}
+    </>
   );
 }
 
