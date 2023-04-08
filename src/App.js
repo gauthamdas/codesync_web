@@ -1,7 +1,7 @@
 
 // eslint-disable-next-line
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import  { useState, useEffect } from "react";
+import  { useState} from "react";
 // import axios from "axios";
 
 import PrivateRoute from "./Utils/PrivateRoute";
@@ -15,8 +15,8 @@ import "./App.css";
 import Sidebar from "./Components/Sidebar";
 
 function App() {
-  const [authLoading, setAuthLoading] = useState(true);
-  const [auth, setAuth] = useState(false);
+  const [, setAuthLoading] = useState(true);
+  const [auth, setAuth] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -100,7 +100,7 @@ function App() {
                 // socket={socket}
               />
 
-              <PrivateRoute
+              <PublicRoute
                 path="/editor"
                 component={CodeEditor}
                 setAuth={setAuth}

@@ -72,15 +72,6 @@ function CodeEditor(props) {
     return decorations;
   }
 
-  function showEvent(str) {
-    // while (output.childNodes.length > 6) {
-    //   output.removeChild(output.firstChild.nextSibling.nextSibling);
-    // }
-    // output.appendChild(document.createTextNode(str));
-    // output.appendChild(document.createElement("br"));
-    console.log(str);
-  }
-
   const handleEditorDidMount = (editor, monaco) => {
     monacoObjects.current = {
       editor,
