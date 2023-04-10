@@ -32,6 +32,7 @@ public class UserController
     @ResponseStatus(value= HttpStatus.OK)
     public  User createUser(@RequestBody User user)
     {
+    System.out.println(user.getUsername());
         return userservice.newUser(user);
     }
 
