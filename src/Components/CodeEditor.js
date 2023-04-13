@@ -1,11 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
+import { useHistory } from "react-router-dom";
 
-function CodeEditor(props) {
+function CodeEditor() {
   const [code, setCode] = useState("import Hello\ndef newFunc():\n  for i in l:\n    print(m)\n  if n==4:\n    print('hi')\n  else:\n    print('bye')\n ");
   const monacoObjects = useRef(null);
   const [users, setUsers] = useState([]);
   const decorationIds = useRef([]);
+
+  let history = useHistory()
+
+  useEffect(() => {
+    
+    history.location.pathname()
+    return () => {
+    
+    }
+  }, [history.location])
+  
+
   // create a array of 10 colors with opacity 0.7
   useEffect(() => {
     if (!monacoObjects.current) return;
