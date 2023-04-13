@@ -4,15 +4,10 @@ import {
   getAuth,
   signInWithPopup,
   signOut,
+  setPersistence,
+  browserSessionPersistence,
 } from "firebase/auth";
-import {
-  getFirestore,
-  query,
-  getDocs,
-  collection,
-  where,
-  addDoc,
-} from "firebase/firestore";
+
 const firebaseConfig = {
     apiKey: "AIzaSyBquhnb8FEUzjwJywfS8Ifxf6m8LVjl9ag",
     authDomain: "codesync-ooad.firebaseapp.com",
@@ -24,26 +19,22 @@ const firebaseConfig = {
   };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+// const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('https://www.googleapis.com/auth/userinfo.profile');
 const signInWithGoogle = async () => {
-  try {
-    const res = await signInWithPopup(auth, googleProvider);
-    const user = res.user;
-    const q = query(collection(db, "users"), where("uid", "==", user.uid));
-    const docs = await getDocs(q);
-    if (docs.docs.length === 0) {
-      await addDoc(collection(db, "users"), {
-        uid: user.uid,
-        name: user.displayName,
-        authProvider: "google",
-        email: user.email,
-      });
-    }
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
+
+    try {
+        await setPersistence(auth, browserSessionPersistence); // set persistence to browser session
+        const result = await signInWithPopup(auth, googleProvider); // sign in with Google using popup
+        const user = result.user;
+        console.log(user, await user.getIdTokenResult(true));
+        return { auth: true, accessToken: user.accessToken, name: user.displayName, email: user.email, photo: user.photoURL}
+      } catch (error) {
+        console.error(error);
+        return { auth: false, accessToken: null, name: null, email: null, photo: null}
+      }
+  
 };
 
 
@@ -53,7 +44,6 @@ const logout = () => {
 };
 export {
   auth,
-  db,
   signInWithGoogle,
   logout,
 };

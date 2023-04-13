@@ -16,7 +16,7 @@
     align-items: center;
     height: 65px;
     padding: 0 80px;
-    background-color: #1a1a1a;
+    background-color: #1a1a1a00;
   }
   
   .logo {
@@ -136,3 +136,6 @@
     z-index: 1;
   }
   
+  #firebaseui{
+    z-index: 100;
+  }

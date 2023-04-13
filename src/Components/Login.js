@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCallback } from "react";
 import axios from 'axios';
 import { setUserSession } from '../Utils/Common';
+import { signInWithGoogle } from '../Utils/AuthProvider';
 // import logo from './.png'
 require('dotenv').config();
 
 function Login({setAuth: hasAuth, setAuthLoading: hasAuthLoading, Socket: socket, ...props}) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
+
+  useEffect(() => {
+  
+    return () => {
+      
+    }
+  }, [])
+  
 
   const isLogged = useCallback((val) => {
           hasAuthLoading(!val);
@@ -20,12 +29,22 @@ function Login({setAuth: hasAuth, setAuthLoading: hasAuthLoading, Socket: socket
   const handleLogin = () => {   
     setError(null);
     setLoading(true);
-    axios.post(`${process.env.REACT_APP_HOST}/login`, {  }).then(response => {
+    signInWithGoogle().then((user) => {
+      if (!user.auth) {
+        throw new Error("Something went wrong. Please try again later.");
+      }
+      delete user.auth;
+    axios.post(`${process.env.REACT_APP_HOST}/login`, user ).then(response => {
       setLoading(false);
-      setUserSession(response.data?.token, response.data?.username, response.data?.name);
+      setUserSession(response.data?.accessToken, response.data?.email, response.data?.name, response.data?.photo);
       isLogged(true)
       props.history.push('/');
     }).catch(error => {
+      setLoading(false);
+      console.log(error.response?.data)
+      if (error.response?.status === 401) setError(error.response?.data.error);
+      else setError("Something went wrong. Please try again later.");
+    });}).catch(error => {
       setLoading(false);
       console.log(error.response?.data)
       if (error.response?.status === 401) setError(error.response?.data.error);
@@ -50,18 +69,12 @@ return <>
   return (
     <div>
 
-    <form className='login'>
+
         <h3 className='brand-titl'>CodeSync</h3>
 
-        <label className="inputLabel">Username</label>
-        <input type="text" placeholder="Email or Phone" id="username"  autoComplete="new-password" />
-
-        <label className="inputLabel">Password</label>
-        <input type="password" placeholder="Password" id="password"  autoComplete="new-password" />
-        {error && <><small style={{ color: 'red' }}>{error}</small><br /></>}<br />
+        {/* <div id="firebaseui"></div> */}
         <input type="button" value={loading ? 'Loading...' : 'LOGIN'} onClick={handleLogin} disabled={loading} />
         
-    </form>
     </div>
   );
 }
