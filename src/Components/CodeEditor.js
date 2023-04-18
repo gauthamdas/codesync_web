@@ -8,7 +8,7 @@ const socket = io(`${process.env.REACT_APP_SOCKET}}`,{
   reconnection: true,
   autoConnect: false,
   transports: ['websocket'],
-  protocol: 'http',
+  // protocol: 'http',
 });
 const languageOptions = [
   { label: "JavaScript", value: "javascript" },
@@ -27,7 +27,7 @@ function CodeEditor() {
   const [availableRooms, setAvailableRooms] = useState([{roomCode: "123456",roomName: "test"}]);
   const [users, setUsers] = useState([]);
 
-  const [isReconnecting, setIsReconnecting] = useState(false);
+  // const [isReconnecting, setIsReconnecting] = useState(false);
 
   const decorationIds = useRef([]);
 
