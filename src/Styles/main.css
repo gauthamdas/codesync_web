@@ -39,6 +39,43 @@
     text-decoration: none;
   }
   
+  .language-dropdown {
+    display: block;
+    position: relative;
+    float: right;
+    margin-right: 10px;
+  }
+  
+  .language-dropdown select {
+    padding: 0.5rem 1.5rem 0.5rem 0.7rem;
+    font-size: 1rem;
+    border: none;
+    background-color: #080404;
+    color: #f8f8f8;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+  
+  .language-dropdown select:focus {
+    outline: none;
+  }
+  
+  .language-dropdown select::-ms-expand {
+    display: none;
+  }
+  
+  .language-dropdown::after {
+    content: "\f107";
+    font-family: FontAwesome;
+    position: absolute;
+    top: 53%;
+    right: 0.3rem;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
   .editor {
     width: 60%;
     margin: 0px auto;
@@ -47,12 +84,9 @@
   }
   
   .editor h2 {
-    margin-bottom: 20px;
+    margin-bottom: 0px;
   }
-  .custom-selection {
-    /* border: 2px solid #ff0000; */
-    /* background-color: #ff00008b; */
-  }
+ 
 /* 5 different colors */
   .color-1 {
     background-color: #ff00008b;
