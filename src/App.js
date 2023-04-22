@@ -12,17 +12,16 @@ import Home from "./Components/Home";
 import Navbar from "./Components/Navbar";
 import CodeEditor from "./Components/CodeEditor";
 import "./App.css";
-import Sidebar from "./Components/Sidebar";
 import { getToken, removeUserSession, setUserSession } from "./Utils/Common";
 import axios from "axios";
 
 function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [auth, setAuth] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
   const toggleDrawer = () => {
-    console.log(!isDrawerOpen)
+    // console.log(!isDrawerOpen)
     setIsDrawerOpen(!isDrawerOpen);
   };
   
@@ -77,9 +76,7 @@ return <>
           toggleDrawer={toggleDrawer}
           //  soc={socket}
            />
-          <Sidebar
-          isDrawerOpen={isDrawerOpen}
-          />
+          
           <div className="content">
             <Switch>
               <PrivateRoute
