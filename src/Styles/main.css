@@ -10,18 +10,57 @@
     color: #fff;
   }
   
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #2d2d2d;
+    color: white;
+  }
+  
+  .brand-title {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: bold;
+    letter-spacing: 0.5rem;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  input[type="button"] {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem 2rem;
+    margin-top: 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background-color: #ff6f61;
+    color: white;
+    text-transform: uppercase;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  input[type="button"]:hover {
+    background-color: #e8433c;
+  }
+
   .navbar {
     display: flex;
     justify-content: space-around;
     align-items: center;
     height: 65px;
     padding: 0 80px;
-    background-color: #1a1a1a00;
+    background-color: #00000099;
   }
   
   .logo {
     font-size: 1.5rem;
     font-weight: bold;
+    color:   #1e90ff;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    letter-spacing: 0.1rem;
   }
   
   .nav-links {
@@ -39,7 +78,7 @@
     text-decoration: none;
   }
   
-  .language-dropdown {
+  /* .language-dropdown {
     display: block;
     position: relative;
     float: right;
@@ -74,9 +113,9 @@
     right: 0.3rem;
     transform: translateY(-50%);
     pointer-events: none;
-  }
+  } */
 
-  .editor {
+  /* .editor {
     width: 60%;
     margin: 0px auto;
     padding: 20px;
@@ -85,23 +124,117 @@
   
   .editor h2 {
     margin-bottom: 0px;
+  } */
+
+  .code-bar{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 45px;
+    width: 100%;
+    padding: 1px 80px;
+    background-color: #00000099;
   }
+
+  .editor {
+    background-color: #3d3d3d;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    padding: 0.5rem 5rem;
+    font-family: Arial, sans-serif;
+  }
+  
+  .editor-dash{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    /* align-items: center; */
+    height: 100vh;
+  }
+  
+.copy-btn{  
+    font-size: 15px;
+    line-height: 25px;
+    padding: 0 15px;
+    border-radius: 5px;
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: capitalize;
+    outline: none;
+}
+
+.copy-btn:hover{
+  background-color: #fff;
+    border-color: #fff;
+    color: #4d76ba;
+    text-decoration: none;
+}
+  
+
+.nav-links i:hover{
+  border-color: #fff;
+    color: #4d76ba;
+    text-decoration: none;
+}
+  .editor .language-dropdown select {
+    /* padding: 0.5rem; */
+    /* font-size: 1.5rem; */
+    height: min-content;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    color: #333;
+  }
+  
+
+
+  .editor select {
+    padding: 0.2rem;
+    font-size: 0.8rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    color: #333;
+    /* margin-bottom: 1rem; */
+    width: 100%;
+  }
+  
+
+  /* Other color variants: .table-secondary, .table-success, .table-danger, .table
+  
+  
+  
+
+
+
+
  
 /* 5 different colors */
   .color-1 {
-    background-color: #ff00008b;
+    border-left: 5px solid #ff00008b;
+    /* border: 15px solid #ff00008b; */
   }
   .color-2 {
-    background-color: #ff82048b;
+    border-left: 5px solid #ff82048b;
   }
   .color-3 {
-    background-color: #ff00ff8b;
+    border-left: 5px solid #ff00ff8b;
   }
   .color-4 {
-    background-color: #00ff008b;
+    border-left: 5px solid #00ff008b;
   }
   .color-5 {
-    background-color: #0000ff8b;
+    border-left: 5px solid #0000ff8b;
+  }
+  .cursor-end{
+    border-left: 5px solid #ff82048b;
   }
   .monaco-editor .selection1 {
     background-color: yellow;
@@ -129,13 +262,15 @@
 
   
   .drawer {
-    width: 300px;
+    width: 280px;
     height: 100%;
     position: fixed;
     top: 0;
     right: -300px;
-    background-color: #3d3d3d;
+    background-color: #55525295;
     transition: transform 0.3s ease-in-out;
+    border: 10px solid #2d2d2d;
+    z-index: 10;
   }
   
   .drawer.open {
@@ -160,14 +295,20 @@
     color: #fff;
     margin-right: 10px;
   }
+
+  .drawer .user-list{
+    height: 10vh;
+    justify-content: center;
+    align-items: center;
+  }
   
   .menu-toggle {
     position: fixed;
-    top: 18px;
-    right: 30px;
+    top: 29px;
+    right: 26px;
     font-size: 1.5rem;
     cursor: pointer;
-    z-index: 1;
+    z-index: 11;
   }
   
   #firebaseui{
