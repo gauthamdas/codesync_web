@@ -11,7 +11,7 @@ function Navbar({toggleDrawer, auth, setAuth, users,...props}) {
       <div className="logo">CODESYNC</div>
       <ul className="nav-links">
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/">About</Link></li>
+        {/* <li><Link to="/">About</Link></li> */}
         <li><Link to="/editor">Editor</Link></li>
       {window.location.pathname.toLowerCase().startsWith('/editor') && <div className="menu-toggle" onClick={toggleDrawer}>
       {/* <i className="fa-solid fa-users-line"></i> */}

@@ -21,7 +21,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { SignalCellular0Bar, SignalCellular3BarTwoTone, SignalCellularConnectedNoInternet4BarTwoTone, SignalWifiStatusbar4Bar } from "@mui/icons-material";
+import { Pending,  WifiOffRounded, WifiRounded } from "@mui/icons-material";
 
 // add type annotations to the socket object
 const socket = io(`${process.env.REACT_APP_SOCKET}/?token=${getToken()}`, {
@@ -30,25 +30,20 @@ const socket = io(`${process.env.REACT_APP_SOCKET}/?token=${getToken()}`, {
   transports: ["websocket"],
 });
 const languageOptions = [
-  { label: "JavaScript", value: "javascript" },
-  { label: "Python", value: "python" },
-  { label: "C++", value: "cpp" },
+  { label: "JavaScript", value: "javascript", ext: "js" },
+  { label: "Python", value: "python", ext: "py" },
+  { label: "C++", value: "cpp", ext: "cpp" },
 ];
-// const codeOpts = {
-//   javascript:
-//     "function newFunc(){\n  for (let i=0;i<l.length;i++){\n    console.log(m);\n  }\n  if (n==4){\n    console.log('hi');\n  }\n  else{\n    console.log('bye');\n  }\n}",
-//   python:
-//     "def newFunc():\n  for i in range(l):\n    print(m)\n  if n==4:\n    print('hi')\n  else:\n    print('bye')",
-//   cpp: "#include <iostream>\nusing namespace std;\nint main(){\n  for (int i=0;i<l.length();i++){\n    cout<<m;\n  }\n  if (n==4){\n    cout<<'hi';\n  }\n  else{\n    cout<<'bye';\n  }\n  return 0;\n}",
-// };
+
 function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
   const [code, setCode] = useState({ python: "", javascript: "", cpp: "" });
   const monacoObjects = useRef(null);
+  const [isConnected, setIsConnected] = useState(1);
   const [roomName, setRoomName] = useState("");
   const [inRoom, setInRoom] = useState(false);
-  const [availableRooms, setAvailableRooms] = useState([
-    { roomCode: "123456", roomName: "test" },
-  ]);
+  const [availableRooms, setAvailableRooms] = useState([]);
+  const hiddenFileInputUploadCode = useRef(null);
+  const [roomCodeINP, setRoomCodeINP] = useState("");
   // console.log(props)
   // const [isReconnecting, setIsReconnecting] = useState(false);
 
@@ -85,12 +80,16 @@ function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
     // console.log(language.current,event.target.value);
   };
 
+  const handleClickUploadCode = (event) => {
+    hiddenFileInputUploadCode.current.click();
+  };
+
   const tryReconnect = useCallback(() => {
     setTimeout(() => {
       socket.connect();
       // if (socket.connected){
       // }
-    }, 2000);
+    }, 1000);
   }, []);
 
   useEffect(() => {
@@ -104,13 +103,34 @@ function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
     }
     // console.log(2)
 
+    // window.addEventListener("offline", () => {
+    //   console.log("offline");
+    //   setIsConnected(0);
+    // });
+
+    // window.addEventListener("online", () => {
+    //   console.log("online");
+    //   setIsConnected(1);
+    // });
+
     socket.io.on("close", (reason, description) => {
       console.log("socket closed");
+      setIsConnected(0);
       if (reason === "transport close") tryReconnect();
+    });
+
+    socket?.on("disconnect", () => {
+      console.log("socket diconnected");
+    });
+
+    socket.io.on("disconnect", (reason) => {
+      console.log("socket disconnected 1");
+      setIsConnected(0);
     });
 
     socket?.on("authConnect", () => {
       // console.log("socket connected");
+      setIsConnected(2);
       socket.emit("joinRoom", { token: getToken(), roomCode: roomCode });
     });
 
@@ -209,6 +229,10 @@ function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
       socket.disconnect({ token: getToken() });
       socket.removeAllListeners();
       socket.io.removeAllListeners();
+      window.removeEventListener("offline", () => {});
+      window.removeEventListener("online", () => {});
+      setInRoom(false);
+      setUsers([]);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inRoom, roomCode, tryReconnect]);
@@ -344,20 +368,7 @@ function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
         language: languageRef.current,
       });
     });
-    // editor.onMouseMove(function (e) {
-    //   // remove all existing decorations
-    //   // monacoObjects.current.editor.deltaDecorations(monacoObjects.current.editor.getModel().getAllDecorations(), []);
-    //   console.log(e);
-    //   editor.deltaDecorations(decorationIds.current, []);
-    // });
-
-    // setUsers([
-    //   { id: 1, name: "User 1", lineNumber: 1, column: 5, color: "red" },
-    //   { id: 2, name: "User 2", lineNumber: 2, column: 4, color: "blue" },
-    //   { id: 3, name: "User 3", lineNumber: 3, column: 4, color: "green" },
-    //   { id: 4, name: "User 4", lineNumber: 4, column: 4, color: "yellow" },
-    //   { id: 5, name: "User 5", lineNumber: 5, column: 4, color: "orange" },
-    // ]);
+    
   };
 
   const handleEditorChange = (value, event) => {
@@ -377,6 +388,43 @@ function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
     });
   };
 
+  const handleFileUpload = (e) => {
+    // console.log(e.target.files[0]);
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+    reader.onload = (e) => {
+      // console.log(e.target.result);
+      setCode((prev) => {
+        return {
+          ...prev,
+          [languageRef.current]: e.target.result,
+        };
+      });
+      socket.emit("codeUpdate", {
+        roomCode: roomCode,
+        language: languageRef.current,
+        code: e.target.result,
+      });
+    };
+
+    reader.onerror = (e) => {
+      console.log(e);
+    };
+  };
+
+  const handledownloadFile = (code,fileName,type) => {
+    const element = document.createElement("a");
+    const file = new Blob([code], {
+      type: type,
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = `${fileName}`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
+
+
   return (
     <>
       <Sidebar isDrawerOpen={isDrawerOpen} users={users} />
@@ -384,7 +432,7 @@ function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
         <>
           <div className="editor">
             <div className="code-bar">
-              <h3>{roomName}</h3>
+              <u><h3>{roomName}</h3></u>
               <div className="language-dropdown">
                 <select
                   value={language ? language : ""}
@@ -407,9 +455,40 @@ function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
                   <i className="fa-solid fa-users-line"></i>&nbsp;Copy
                 </button>
               </div>
+              <div className="upload-button">
+                <input
+                  type="file"
+                  id="file"
+                  ref={hiddenFileInputUploadCode}
+                  onChange={handleFileUpload}
+                  style={{ display: "none" }}
+                />
+                <label htmlFor="file">
+                  <button className="btn" onClick={handleClickUploadCode}>
+                    <i className="fa-solid fa-upload"></i>&nbsp;Upload
+                  </button>
+                </label>
+              </div>
+              <div className="download-button">
+                <button
+                  className="btn"
+                  onClick={() => {
+                    handledownloadFile(
+                      code[languageRef.current],
+                      `${roomName}.${languageOptions.find(l=>l.value===languageRef.current).ext}`,
+                      "text/plain"
+                    );
+                  }}
+                >
+                  <i className="fa-solid fa-download"></i>&nbsp;Download
+                </button>
+              </div>
               <div>
-                {/* connection status */}
-                <SignalCellular3BarTwoTone />
+                {/* write a if else if*/}
+
+                {isConnected===0 ? 
+                <WifiOffRounded sx={{ color: "#ff0000"}}/>:(isConnected===1 ?
+                <Pending sx={{ color: "#ffee00"}}/>:<WifiRounded sx={{ color: "#00ff00"}} />)}
               </div>
             </div>
             <Editor
@@ -500,12 +579,15 @@ function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
                 <TextField
                   id="roomCode"
                   type="text"
-                  value={roomCode ? roomCode : ""}
+                  value={roomCode?roomCode:roomCodeINP}
                   variant="outlined"
                   label="Room Code"
+                  onChange={(event) => setRoomCodeINP(event.target.value)}
                 />
               </FormControl>
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" onClick={()=>{
+                history.push(`/editor/${roomCodeINP}`)
+              }}>
                 Join
               </Button>
               {/* <div style={{"overflowY": "scroll", "marginTop":"20px"}}> */}

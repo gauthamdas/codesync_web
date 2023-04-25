@@ -145,6 +145,7 @@
     height: 100vh;
     padding: 0.5rem 5rem;
     font-family: Arial, sans-serif;
+    width: 80vw;
   }
   
   .editor-dash{
@@ -170,7 +171,22 @@
     outline: none;
 }
 
-.copy-btn:hover{
+.code-bar .btn{
+  font-size: 15px;
+    line-height: 25px;
+    padding: 0 15px;
+    border-radius: 5px;
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-transform: capitalize;
+    outline: none;
+}
+
+.copy-btn:hover,.btn:hover{
   background-color: #fff;
     border-color: #fff;
     color: #4d76ba;
@@ -262,7 +278,7 @@
 
   
   .drawer {
-    width: 280px;
+    width: 20vw;
     height: 100%;
     position: fixed;
     top: 0;
@@ -283,7 +299,7 @@
   
   .drawer ul {
     list-style: none;
-    margin: 20px;
+    margin: 10px;
   }
   
   .drawer ul li {
@@ -297,9 +313,28 @@
   }
 
   .drawer .user-list{
+    display: grid;
+    grid-template-columns: 30% 70%;
     height: 10vh;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
+    border: 5px solid #2d2d2d;
+    margin: 5px 0;
+  }
+
+  .drawer .user-list .user-name{
+    display: block;
+    color: #fff;
+    width: 11vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .drawer .user-list img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
   }
   
   .menu-toggle {
