@@ -5,6 +5,21 @@ export const getUser = () => {
   else return null;
 }
 
+// return the username from local storage
+export const getUsername = () => {
+  const userStr = localStorage.getItem('username');
+  if (userStr) return JSON.parse(userStr);
+  else return null;
+}
+
+// return the photoURL from local storage
+export const getPhotoURL = () => {
+  const userStr = localStorage.getItem('photoURL');
+  if (userStr) return JSON.parse(userStr);
+  else return null;
+}
+
+
 // return the token from the session storage
 export const getToken = () => {
   return localStorage.getItem('token') || null;

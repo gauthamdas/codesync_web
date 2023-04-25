@@ -67,14 +67,14 @@ return <>
 </>;  }
 
   return (
-    <div>
-
-
-        <h3 className='brand-titl'>CodeSync</h3>
-
-        {/* <div id="firebaseui"></div> */}
-        <input type="button" value={loading ? 'Loading...' : 'LOGIN'} onClick={handleLogin} disabled={loading} />
-        
+    <div className="login-container">
+      <h3 className="brand-title">CodeSync</h3>
+      <input
+        type="button"
+        value={loading ? 'Loading...' : 'LOGIN'}
+        onClick={handleLogin}
+        disabled={loading}
+      />
     </div>
   );
 }

@@ -18,7 +18,10 @@ import axios from "axios";
 function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [auth, setAuth] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const [users, setUsers] = useState([]);
+
 
   const toggleDrawer = () => {
     // console.log(!isDrawerOpen)
@@ -74,6 +77,7 @@ return <>
           setAuth={setAuth}
           setAuthLoading={setAuthLoading}
           toggleDrawer={toggleDrawer}
+          users={users}
           //  soc={socket}
            />
           
@@ -105,6 +109,8 @@ return <>
                 setAuth={setAuth}
                 setAuthLoading={setAuthLoading}
                 isDrawerOpen={isDrawerOpen}
+                users={users}
+                setUsers={setUsers}
                 // socket={socket}
               />
               

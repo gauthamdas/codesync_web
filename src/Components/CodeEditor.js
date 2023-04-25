@@ -1,10 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-import { getToken } from "../Utils/Common";
+import { getToken, getUsername } from "../Utils/Common";
 import io from "socket.io-client";
 import Sidebar from "./Sidebar";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { SignalCellular0Bar, SignalCellular3BarTwoTone, SignalCellularConnectedNoInternet4BarTwoTone, SignalWifiStatusbar4Bar } from "@mui/icons-material";
 
 // add type annotations to the socket object
 const socket = io(`${process.env.REACT_APP_SOCKET}/?token=${getToken()}`, {
@@ -24,15 +41,14 @@ const languageOptions = [
 //     "def newFunc():\n  for i in range(l):\n    print(m)\n  if n==4:\n    print('hi')\n  else:\n    print('bye')",
 //   cpp: "#include <iostream>\nusing namespace std;\nint main(){\n  for (int i=0;i<l.length();i++){\n    cout<<m;\n  }\n  if (n==4){\n    cout<<'hi';\n  }\n  else{\n    cout<<'bye';\n  }\n  return 0;\n}",
 // };
-function CodeEditor({ isDrawerOpen, ...props }) {
-  const [code, setCode] = useState({python:"", javascript:"", cpp:""});
+function CodeEditor({ isDrawerOpen, users, setUsers, ...props }) {
+  const [code, setCode] = useState({ python: "", javascript: "", cpp: "" });
   const monacoObjects = useRef(null);
   const [roomName, setRoomName] = useState("");
   const [inRoom, setInRoom] = useState(false);
   const [availableRooms, setAvailableRooms] = useState([
     { roomCode: "123456", roomName: "test" },
   ]);
-  const [users, setUsers] = useState([]);
   // console.log(props)
   // const [isReconnecting, setIsReconnecting] = useState(false);
 
@@ -117,7 +133,6 @@ function CodeEditor({ isDrawerOpen, ...props }) {
         // console.log(prevUsers);
         return [...prevUsers];
       });
-      
     });
 
     socket?.on("codeUpdate", (data) => {
@@ -136,7 +151,9 @@ function CodeEditor({ isDrawerOpen, ...props }) {
     socket?.on("activeUsersUpdate", (data) => {
       const { email, name, lineNumber, column, type } = data;
       setUsers((prevUsers) => {
-        let id = prevUsers.length ? parseInt(prevUsers[prevUsers.length - 1].id) + 1 : 1;
+        let id = prevUsers.length
+          ? parseInt(prevUsers[prevUsers.length - 1].id) + 1
+          : 1;
         let existingUser = prevUsers.find((user) => user.email === email);
         // console.log(existingUser, type);
         if (existingUser && type === "leave") {
@@ -193,6 +210,7 @@ function CodeEditor({ isDrawerOpen, ...props }) {
       socket.removeAllListeners();
       socket.io.removeAllListeners();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inRoom, roomCode, tryReconnect]);
 
   useEffect(() => {
@@ -234,18 +252,21 @@ function CodeEditor({ isDrawerOpen, ...props }) {
         history.push("/editor");
       });
     return () => {};
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, roomCode]);
+ 
+  const createRoom = () => {
+    // e.preventDefault();
+    let roomName = document.getElementById("roomName").value;
+    let language = document.getElementById("language").nextElementSibling.value;
 
-  const createRoom = (e) => {
-    e.preventDefault();
-    // console.log(e.target.language.value, e.target.roomName.value);
-    // return;
+    console.log(roomName, language);
 
     axios
       .post(`${process.env.REACT_APP_HOST}/room/create`, {
         token: getToken(),
-        roomName: e.target.roomName.value,
-        defaultLanguage: e.target.language.value,
+        roomName: roomName,
+        defaultLanguage: language,
       })
       .then((res) => {
         // console.log(res);
@@ -279,24 +300,32 @@ function CodeEditor({ isDrawerOpen, ...props }) {
     /** @type {import("@monaco-editor/react").Monaco} */ monaco,
     users
   ) => {
-    const decorations = users.map((user, index) => {
-      // console.log(user);
-      return {
-        range: new monaco.Range(
-          // 3, 2, 3, 3
-          user.lineNumber,
-          user.column,
-          user.lineNumber,
-          parseInt(user.column) + 1
-        ),
-        options: {
-          inlineClassName: `color-${user.id}`,
-          stickiness:
-            monaco.editor.TrackedRangeStickiness.GrowsOnlyWhenTypingBefore,
-          hoverMessage: { value: `User: ${user.name}` },
-        },
-      };
-    });
+    const decorations = users
+      .filter((user) => user.email !== getUsername())
+      .map((user, index) => {
+        // console.log(user);
+
+        return {
+          range: new monaco.Range(
+            // 3, 2, 3, 3
+            user.lineNumber,
+            user.column,
+            user.lineNumber,
+            parseInt(user.column) + 1
+          ),
+          options: {
+            // inlineClassName: `color-${user.id}`,
+            className: `color-${user.id}`,
+            stickiness:
+              monaco.editor.TrackedRangeStickiness.GrowsOnlyWhenTypingBefore,
+            hoverMessage: { value: `User: ${user.name}` },
+            minimap: {
+              color: "#ff82048b",
+              position: monaco.editor.MinimapPosition.Gutter,
+            },
+          },
+        };
+      });
     return decorations;
   };
 
@@ -308,6 +337,7 @@ function CodeEditor({ isDrawerOpen, ...props }) {
     editor.focus();
     editor.onDidChangeCursorPosition((e) => {
       // console.log(e);
+      if (e.source === "modelChange") return;
       socket.emit("cursorUpdate", {
         roomCode: roomCode,
         cursor: `${e.position.lineNumber}:${e.position.column}`,
@@ -350,23 +380,37 @@ function CodeEditor({ isDrawerOpen, ...props }) {
   return (
     <>
       <Sidebar isDrawerOpen={isDrawerOpen} users={users} />
-      <div className="editor">
-        {inRoom ? (
-          <>
-            <h2>
-              Code Editor <small aria-haspopup={"tree"}>({roomName})</small>
-            </h2>
-            <div className="language-dropdown">
-              <select
-                value={language ? language : ""}
-                onChange={handleLanguageChange}
+      {inRoom ? (
+        <>
+          <div className="editor">
+            <div className="code-bar">
+              <h3>{roomName}</h3>
+              <div className="language-dropdown">
+                <select
+                  value={language ? language : ""}
+                  onChange={handleLanguageChange}
+                >
+                  {languageOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div
+                className="copy-button"
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                }}
               >
-                {languageOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                <button className="copy-btn">
+                  <i className="fa-solid fa-users-line"></i>&nbsp;Copy
+                </button>
+              </div>
+              <div>
+                {/* connection status */}
+                <SignalCellular3BarTwoTone />
+              </div>
             </div>
             <Editor
               height="75vh"
@@ -380,47 +424,118 @@ function CodeEditor({ isDrawerOpen, ...props }) {
               onMount={handleEditorDidMount}
               onChange={handleEditorChange}
             />
-          </>
-        ) : (
-          <>
-            <div>
-              <form onSubmit={createRoom}>
-                <label>
-                  Room Name:
-                  <input type="text" id="roomName" />
-                </label>
-                <br />
-                <label>
-                  Default language:
-                  <select defaultValue={languageOptions[0]} id="language">
-                    {languageOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button type="submit">Submit</button>
-              </form>
-              <h1>Create Room</h1>
-            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="editor-dash">
+            <Box
+              sx={{
+                display: "flex",
+                height: "90%",
+                width: "50%",
+                flexDirection: "column",
+                color: "black",
+                background: "white",
+                padding: "20px 200px",
+                border: "15px solid #1976d2",
+                borderRadius: "30px",
+              }}
+            >
+              <Typography variant="h4" component="h1" sx={{ mt: 2, mb: 2 }}>
+                Create Room
+              </Typography>
+              <FormControl sx={{ mb: 2 }}>
+                {/* <FormLabel htmlFor="roomName">Room Name:</FormLabel> */}
+                <TextField
+                  id="roomName"
+                  type="text"
+                  label="Room Name"
+                  variant="outlined"
+                />
+              </FormControl>
+              <FormControl sx={{ mb: 2 }}>
+                <InputLabel id="select-label">Default language</InputLabel>
+                <Select
+                  id="language"
+                  variant="outlined"
+                  label="Default language"
+                  defaultValue={languageOptions[0].value}
+                >
+                  {languageOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                color="primary"
+                type="button"
+                onClick={createRoom}
+              >
+                Create Room
+              </Button>
+            </Box>
             <br />
-            <div>
-              <h1>Join Room</h1>
-              {availableRooms.map((room, index) => {
-                return (
-                  <h5
-                    key={index}
-                    onClick={() => history.push(`/editor/${room.roomCode}`)}
-                  >
-                    {room.roomName}
-                  </h5>
-                );
-              })}
-            </div>
-          </>
-        )}
-      </div>
+            <Box
+              sx={{
+                display: "flex",
+                height: "90%",
+                width: "50%",
+                flexDirection: "column",
+                color: "black",
+                background: "white",
+                padding: "20px 100px",
+                border: "15px solid #1976d2",
+                borderRadius: "30px",
+              }}
+            >
+              <Typography variant="h4" component="h1" sx={{ mt: 2, mb: 2 }}>
+                Join Room
+              </Typography>
+              <FormControl sx={{ mb: 2 }}>
+                {/* <FormLabel htmlFor="roomCode">Room Code:</FormLabel> */}
+                <TextField
+                  id="roomCode"
+                  type="text"
+                  value={roomCode ? roomCode : ""}
+                  variant="outlined"
+                  label="Room Code"
+                />
+              </FormControl>
+              <Button variant="contained" color="primary">
+                Join
+              </Button>
+              {/* <div style={{"overflowY": "scroll", "marginTop":"20px"}}> */}
+              <TableContainer sx={{ maxHeight: 300 }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Room Name</TableCell>
+                      <TableCell>Room Code</TableCell>
+                      <TableCell />
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {availableRooms.map((room, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{room.roomName}</TableCell>
+                        <TableCell>{room.roomCode}</TableCell>
+                        <TableCell>
+                          <Link to={`/editor/${room.roomCode}`}>Join</Link>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {/* </div> */}
+            </Box>
+          </div>
+        </>
+      )}
     </>
   );
 }
